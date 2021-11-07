@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -10,9 +10,20 @@ import { FeedService } from '../services/feed.service';
 export class FeedController {
     constructor(private feedService: FeedService) {}
 
+    /*
     @Get()
     findAll(): Observable<IFeedPost[]> {
         return this.feedService.findAllPosts();
+    }
+    */
+
+    @Get()
+    findSelected(
+        @Query('take') take: number = 1,
+        @Query('skip') skip: number = 1, 
+    ): Promise<{posts, number}> {
+        take = take > 20 ? 20 : take;
+        return this.feedService.findPosts(take, skip);
     }
 
     @Get(':id')

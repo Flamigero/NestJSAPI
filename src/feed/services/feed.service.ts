@@ -20,6 +20,14 @@ export class FeedService {
         return from(this.feedPostRepository.findOne({id}));
     }
 
+    async findPosts(take: number, skip: number): Promise<{posts, number}> {
+        const [posts, number] = await this.feedPostRepository.findAndCount({take, skip});
+        return {
+            posts,
+            number: posts.length
+        };
+    }
+
     createPost(feedPost: IFeedPost): Observable<IFeedPost> {
         return from(this.feedPostRepository.save(feedPost));
     }
