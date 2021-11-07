@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { IFeedPost } from '../models/post.interface';
 import { FeedService } from '../services/feed.service';
 
+@ApiTags('feed')
 @Controller('feed')
 export class FeedController {
     constructor(private feedService: FeedService) {}
