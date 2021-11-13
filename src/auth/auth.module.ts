@@ -10,7 +10,7 @@ import { JwtStrategy } from './guards/jwt.strategy';
 @Module({
   imports: [
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET || 'jwtsecret',
       signOptions: {expiresIn: '3600s'},
     }),
     TypeOrmModule.forFeature([UserEntity])

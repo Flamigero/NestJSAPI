@@ -13,4 +13,9 @@ export class AuthController {
     register(@Body() user: IUser): Promise<IUser> {
         return this.authService.registerAccount(user);
     }
+
+    @Post('login')
+    login(@Body() user: IUser): Promise<{token: string}> {
+        return this.authService.login(user);
+    }
 }
