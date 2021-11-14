@@ -3,7 +3,7 @@ import { Role } from "./auth.role.enum";
 
 
 export class IUser {
-    id?: number;
+    id: number;
     firstName?: string;
     lastName?: string;
     email?: string;

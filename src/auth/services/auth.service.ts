@@ -5,6 +5,7 @@ import { UserEntity } from '../modules/auth.user.entity';
 import { IUser } from '../modules/auth.user.interface';
 import Crypto from 'src/helpers/Crypo';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserDto, RegisterUserDto } from '../modules/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
         private jwtService: JwtService
     ) {}
 
-    async registerAccount(user: IUser): Promise<IUser> {
+    async registerAccount(user: RegisterUserDto): Promise<IUser> {
         const {firstName, lastName, email, password} = user;
 
         const userDb = await this.userRepository.findOne({email});
@@ -31,19 +32,19 @@ export class AuthService {
     }
 
     async validateUser(email: string, password: string): Promise<IUser> {
-        const user = await this.userRepository.findOne({email}, {select: ['password']});
+        const user = await this.userRepository.findOne({email}, {select: ['id', 'firstName', 'lastName', 'email','password', 'role']});
         if(!user) return null;
         if(!await Crypto.compare(password, user.password)) return null;
 
         return user;
     }
 
-    async login(user: IUser): Promise<{token: string}> {
+    async login(user: LoginUserDto): Promise<{token: string}> {
         const {email, password} = user;
         const validatedUser = await this.validateUser(email, password);
 
         if(!validatedUser) throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
-        const token = await this.jwtService.sign({user});
+        const token = await this.jwtService.sign({user: validatedUser});
         return {token};
     }
 }

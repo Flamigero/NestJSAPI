@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, from } from 'rxjs';
+import { IUser } from 'src/auth/modules/auth.user.interface';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { FeedPostEntity } from '../models/post.entity';
 import { IFeedPost } from '../models/post.interface';
@@ -28,7 +29,8 @@ export class FeedService {
         };
     }
 
-    createPost(feedPost: IFeedPost): Observable<IFeedPost> {
+    createPost(feedPost: IFeedPost, user: IUser): Observable<IFeedPost> {
+        feedPost.author = user;
         return from(this.feedPostRepository.save(feedPost));
     }
 
