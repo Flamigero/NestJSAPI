@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../modules/auth.user.entity';
@@ -16,6 +16,10 @@ export class AuthService {
 
     async registerAccount(user: IUser): Promise<IUser> {
         const {firstName, lastName, email, password} = user;
+
+        const userDb = await this.userRepository.findOne({email});
+        if(userDb) throw new HttpException('This email already exist', HttpStatus.BAD_REQUEST);
+
         const hashedPassword = await Crypto.hash(password);
 
         return this.userRepository.save({
@@ -38,7 +42,7 @@ export class AuthService {
         const {email, password} = user;
         const validatedUser = await this.validateUser(email, password);
 
-        if(!validatedUser) return;
+        if(!validatedUser) throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
         const token = await this.jwtService.sign({user});
         return {token};
     }

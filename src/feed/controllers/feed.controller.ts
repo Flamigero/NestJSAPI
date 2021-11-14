@@ -1,12 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { IFeedPost } from '../models/post.interface';
 import { FeedService } from '../services/feed.service';
 
 @ApiTags('feed')
 @Controller('feed')
+@UseGuards(JwtGuard)
 export class FeedController {
     constructor(private feedService: FeedService) {}
 
